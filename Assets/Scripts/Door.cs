@@ -10,6 +10,8 @@ public class Door : MonoBehaviour, IInteractable
     [SerializeField] private float openDistance = 3.0f;
     [SerializeField] private float openingSpeed = 2.0f;
 
+    [SerializeField] private bool locked = false;
+
     [SerializeField] private bool isOpen = false;
 
     [SerializeField] private Vector3 closedPosition;
@@ -31,6 +33,14 @@ public class Door : MonoBehaviour, IInteractable
     }
 
     public void Interact()
+    {
+        if (!locked)
+        {
+            isOpen = !isOpen;
+        }
+    }
+
+    public void ForceInteract()
     {
         isOpen = !isOpen;
     }

@@ -6,8 +6,8 @@ public class PlayerMovementBehaviour : MonoBehaviour
 {
     [SerializeField] private string horizontalInputName = default;
     [SerializeField] private string verticalInputName = default;
-    [SerializeField] private float movementSpeed = default;
-
+    [SerializeField] private float movementSpeed = 5f;
+    [SerializeField] private float sprintSpeed = 10f;
     [SerializeField] private float slopeForce;
     [SerializeField] private float slopeForceRayLength;
 
@@ -16,6 +16,7 @@ public class PlayerMovementBehaviour : MonoBehaviour
     [SerializeField] private AnimationCurve jumpFallOff = default;
     [SerializeField] private float jumpMultiplier = default;
     [SerializeField] private KeyCode jumpKey = default;
+    [SerializeField] private KeyCode sprintKey = KeyCode.LeftShift;
 
     private bool isJumping;
 
@@ -37,7 +38,14 @@ public class PlayerMovementBehaviour : MonoBehaviour
         Vector3 forwardMovement = transform.forward * verticalInput;
         Vector3 rightMovement = transform.right * horizontalInput;
 
-        charController.SimpleMove(Vector3.ClampMagnitude(forwardMovement + rightMovement, 1.0f) * movementSpeed); //Clampmagnitude to stop faster diagonal movement
+        if (Input.GetKey(sprintKey))
+        {
+            charController.SimpleMove(Vector3.ClampMagnitude(forwardMovement + rightMovement, 1.0f) * sprintSpeed); //Clampmagnitude to stop faster diagonal movement
+        }
+        else
+        {
+            charController.SimpleMove(Vector3.ClampMagnitude(forwardMovement + rightMovement, 1.0f) * movementSpeed);
+        }
 
         if ((verticalInput != 0 || horizontalInput != 0) && OnSlope())
         {

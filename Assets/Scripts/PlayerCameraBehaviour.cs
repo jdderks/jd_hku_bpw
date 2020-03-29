@@ -1,23 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class PlayerCameraBehaviour : MonoBehaviour
 {
     [SerializeField] private string mouseXInputName = default; //Input name for inputmanager on X
     [SerializeField] private string mouseYInputName = default; //Input name for inputmanager on Y
-    [SerializeField] private string shootInputName = default; //Input name for inputmanager to shoot
     [SerializeField] private string interactButtonName = default; //Input name for inputmanager to interact
-    
 
-    [SerializeField] private GunBehaviour gun;
+    [SerializeField] private Image reticle;
 
     [SerializeField] private Transform playerBody = default; //The transform of the player for movement
 
     private float xAxisClamp = default; //Tracker of the clamping of the camera
 
     [SerializeField] private float mouseSensitivity = default; //The sensitivity of the mouse
-
+    [SerializeField] private float interactDistance = 2f; //The distance the player can interact with interactables
 
     private void Awake()
     {
@@ -33,7 +32,6 @@ public class PlayerCameraBehaviour : MonoBehaviour
     private void Update()
     {
         CameraRotation();
-        //ShootInput();
         InteractInput();
     }
 
@@ -70,33 +68,40 @@ public class PlayerCameraBehaviour : MonoBehaviour
 
     private void InteractInput()
     {
-        if (Input.GetButtonDown(interactButtonName))
-        {
-            RaycastHit hit;
-            Ray ray = new Ray(transform.position, transform.forward);
 
-            float interactDistance = 2f;
-            if (Physics.Raycast(ray, out hit, interactDistance))
+        RaycastHit hit;
+        Ray ray = new Ray(transform.position, transform.forward);
+        
+        if (Physics.Raycast(ray, out hit, interactDistance))
+        {
+            if (hit.transform.tag == "Interactable")
             {
-                if (hit.transform.tag == "Interactable")
+                reticle.color = Color.white;
+                if (Input.GetButtonDown(interactButtonName))
                 {
                     hit.transform.GetComponent<IInteractable>().Interact();
                 }
-                if (hit.transform.tag == "Item")
+            }
+            else
+            {
+                reticle.color = Color.black;
+            }
+
+
+            if (hit.transform.tag == "Item")
+            {
+                if (Input.GetButtonDown(interactButtonName))
                 {
                     hit.transform.GetComponent<Item>().Grab();
-
                 }
             }
         }
-    }
-
-    private void ShootInput()
-    {
-        if (Input.GetButtonDown(shootInputName))
+        else
         {
-            gun.Shoot();
+            reticle.color = Color.black;
         }
     }
+
+
 
 }
