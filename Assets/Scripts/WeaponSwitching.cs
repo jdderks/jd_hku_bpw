@@ -5,6 +5,9 @@ using UnityEngine;
 public class WeaponSwitching : MonoBehaviour
 {
     public int selectedWeapon = 0;
+    [SerializeField] private Gun currentlyEquipedGun;
+
+    public Gun CurrentlyEquipedGun { get => currentlyEquipedGun; set => currentlyEquipedGun = value; }
 
     void Start()
     {
@@ -52,6 +55,7 @@ public class WeaponSwitching : MonoBehaviour
             if (i == selectedWeapon)
             {
                 weapon.gameObject.SetActive(true);
+                CurrentlyEquipedGun = weapon.gameObject.GetComponent<Gun>();
             }
             else
             {

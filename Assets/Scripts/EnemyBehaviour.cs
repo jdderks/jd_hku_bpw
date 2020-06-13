@@ -6,7 +6,7 @@ using UnityEngine.AI;
 public class EnemyBehaviour : MonoBehaviour
 {
     public float health = 100f;
-
+    
     GameObject player;
     private NavMeshAgent agent;
     
@@ -25,12 +25,18 @@ public class EnemyBehaviour : MonoBehaviour
         }
         if (health <= 0)
         {
-            Destroy(gameObject);
+            Die();
         }
     }
 
     public void DealDamage(float damage)
     {
         health -= damage;
+    }
+
+    public void Die()
+    {
+        EconomyManager.Money += 5;
+        Destroy(gameObject);
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
+using TMPro;
 
 public class PlayerCameraBehaviour : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class PlayerCameraBehaviour : MonoBehaviour
     [SerializeField] private string interactButtonName = default; //Input name for inputmanager to interact
 
     [SerializeField] private Image reticle;
+
+    [SerializeField] private TextMeshProUGUI grabText;
 
     [SerializeField] private Transform playerBody = default; //The transform of the player for movement
 
@@ -76,6 +79,7 @@ public class PlayerCameraBehaviour : MonoBehaviour
         {
             if (hit.transform.tag == "Interactable")
             {
+                grabText.text = hit.transform.GetComponent<InteractableButton>().FlavorText;
                 reticle.color = Color.white;
                 if (Input.GetButtonDown(interactButtonName))
                 {
@@ -84,16 +88,8 @@ public class PlayerCameraBehaviour : MonoBehaviour
             }
             else
             {
+                grabText.text = "";
                 reticle.color = Color.black;
-            }
-
-
-            if (hit.transform.tag == "Item")
-            {
-                if (Input.GetButtonDown(interactButtonName))
-                {
-                    hit.transform.GetComponent<Item>().Grab();
-                }
             }
         }
         else

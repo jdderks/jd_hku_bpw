@@ -1,38 +1,53 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
+﻿/*
+ * Copyright (c) 2019 Razeware LLC
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * Notwithstanding the foregoing, you may not use, copy, modify, merge, publish, 
+ * distribute, sublicense, create a derivative work, and/or sell copies of the 
+ * Software in any work that is designed, intended, or marketed for pedagogical or 
+ * instructional purposes related to programming, coding, application development, 
+ * or information technology.  Permission for such use, copying, modification,
+ * merger, publication, distribution, sublicensing, creation of derivative works, 
+ * or sale is expressly withheld.
+ *    
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 
-public class StateMachine : MonoBehaviour
+namespace RayWenderlich.Unity.StatePatternInUnity
 {
-    Dictionary<Type, BaseState> _availableStates;
-    
-    public BaseState CurrentState { get; private set; }
-    public event Action<BaseState> OnStateChanged;
-
-    public void SetStates (Dictionary<Type, BaseState> states)
+    public class StateMachine
     {
-        _availableStates = states;
-    }
+        public State CurrentState { get; private set; }
 
-    void Update()
-    {
-        if (CurrentState == null)
+        public void Initialize(State startingState)
         {
-            CurrentState = _availableStates.Values.First();
+            CurrentState = startingState;
+            startingState.Enter();
+
         }
 
-        var nextState = CurrentState?.Tick();
-        if (nextState != null && nextState != CurrentState?.GetType())
+        public void ChangeState(State newState)
         {
-            SwitchToNewState(nextState);
-        }
-    }
+            CurrentState.Exit();
 
-    private void SwitchToNewState(Type nextState)
-    {
-        CurrentState = _availableStates[nextState];
-        OnStateChanged?.Invoke(CurrentState);
+            CurrentState = newState;
+            newState.Enter();
+        }
+
     }
 }
